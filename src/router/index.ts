@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
 import type {RouteRecordRaw} from "vue-router";
+import {useTokenStore} from "@/store/token.ts";
 
 const routes: RouteRecordRaw[] = [
     {path: "/login", name: "Login", component: () => import("@/views/Login.vue"), meta: {title: "登录"}},
@@ -9,7 +10,6 @@ const routes: RouteRecordRaw[] = [
         {path: "devices", name: "Device", component: () => import("@/views/DeviceList.vue"), meta: {title: "设备管理", icon: "Cpu", roles: [1]}},
         {path: "energy", name: "EnergyRealtime", component: () => import("@/views/EnergyRealtime.vue"), meta: {title: "实时能耗", icon: "Lightning", roles: [1, 2]}},
         {path: "alarms", name: "Alarm", component: () => import("@/views/AlarmList.vue"), meta: {title: "告警记录", icon: "Warning", roles: [1]}},
-        {path: "stats", name: "EnergyStats", component: () => import("@/views/EnergyStats.vue"), meta: {title: "统计分析", icon: "PieChart", roles: [1]}}
         ]
     }
 ]
@@ -19,20 +19,19 @@ const router = createRouter({
     routes: routes,
 })
 
-router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem("token")
+router.beforeEach((to) => {
+    const tokenStore = useTokenStore();
     
-    if (to.path === "/login") {
-        next()
-        return
+    if (to.path === "/login") return true;
+    
+    if (!tokenStore.token) {
+        return "/login";
     }
     
-    if (!token) {
-        next("/login")
-    } else {
-        next()
-    }
-})
+    return true;
+});
+
+
 
 
 export default router
