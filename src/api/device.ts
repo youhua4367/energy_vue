@@ -4,7 +4,7 @@ import type {Device} from "@/types/device.ts";
 
 // 查询设备
 export const getDeviceList = (): Promise<ApiResponse> => {
-    return request.get("/admin/device/list")
+    return request.get("/user/device/all")
 }
 
 // 新增设备

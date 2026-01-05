@@ -1,122 +1,3 @@
-<template>
-    <div class="energy-monitor-container">
-        <el-card class="main-card" shadow="hover">
-            <!-- 页面标题 -->
-            <div class="page-header">
-                <h2 class="page-title">能耗监控中心</h2>
-                <p class="page-desc">实时监控设备能耗数据，分析功率变化趋势</p>
-            </div>
-
-            <!-- 选择设备 & 手动刷新 -->
-            <div class="device-selector">
-                <el-select
-                    v-model="selectedDeviceId"
-                    placeholder="请选择监控设备"
-                    class="device-select"
-                    clearable
-                    filterable
-                >
-                    <el-option
-                        v-for="d in deviceList"
-                        :key="d.id"
-                        :label="d.deviceName"
-                        :value="d.id"
-                    />
-                </el-select>
-                <el-button
-                    type="primary"
-                    @click="fetchRealtime"
-                    :loading="loading"
-                    icon="Refresh"
-                    class="refresh-btn"
-                >
-                    刷新实时数据
-                </el-button>
-            </div>
-
-            <!-- 实时数据展示 -->
-            <div v-show="!!selectedDeviceId" class="realtime-data-section">
-                <h3 class="section-title">实时能耗数据</h3>
-
-                <!-- 骨架屏加载 -->
-                <el-skeleton
-                    v-if="loading"
-                    :rows="4"
-                    animated
-                    class="skeleton-loading"
-                />
-
-                <!-- 数据卡片 -->
-                <el-row :gutter="20" v-else>
-                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
-                        <el-card class="data-card voltage-card">
-                            <el-statistic
-                                title="电压"
-                                :value="realtimeData?.voltage || 0"
-                                suffix="V"
-                                value-style="font-size: 24px; font-weight: 600;"
-                            />
-                        </el-card>
-                    </el-col>
-                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
-                        <el-card class="data-card current-card">
-                            <el-statistic
-                                title="电流"
-                                :value="realtimeData?.current || 0"
-                                suffix="A"
-                                value-style="font-size: 24px; font-weight: 600;"
-                            />
-                        </el-card>
-                    </el-col>
-                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
-                        <el-card class="data-card power-card">
-                            <el-statistic
-                                title="功率"
-                                :value="realtimeData?.power || 0"
-                                suffix="W"
-                                value-style="font-size: 24px; font-weight: 600; color: #409EFF;"
-                            />
-                        </el-card>
-                    </el-col>
-                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
-                        <el-card class="data-card energy-card">
-                            <el-statistic
-                                title="累计用电"
-                                :value="realtimeData?.totalEnergy || 0"
-                                suffix="kWh"
-                                value-style="font-size: 24px; font-weight: 600;"
-                            />
-                        </el-card>
-                    </el-col>
-                </el-row>
-            </div>
-
-            <!-- 无数据提示 -->
-            <div v-show="!selectedDeviceId" class="empty-tip">
-                <el-empty description="请选择设备查看能耗数据" />
-            </div>
-
-            <!-- 历史功率折线图 -->
-            <div class="chart-section" v-show="!!selectedDeviceId">
-                <h3 class="section-title">历史功率变化趋势</h3>
-
-                <!-- 图表加载状态 -->
-                <div v-if="chartLoading" class="chart-loading">
-                    <el-skeleton :rows="1" height="300px" animated />
-                </div>
-
-                <!-- 图表容器 -->
-                <div id="power-chart" class="chart-container" />
-
-                <!-- 无历史数据提示 -->
-                <div v-if="!chartLoading && historyData.length === 0" class="chart-empty">
-                    <el-empty description="暂无历史功率数据" />
-                </div>
-            </div>
-        </el-card>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
 import { ElMessage } from "element-plus";
@@ -285,10 +166,124 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
-/* 这里保持你原来的样式，省略，和你上面贴的一样 */
-</style>
+<template>
+    <div class="energy-monitor-container">
+        <el-card class="main-card" shadow="hover">
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <h2 class="page-title">能耗监控中心</h2>
+                <p class="page-desc">实时监控设备能耗数据，分析功率变化趋势</p>
+            </div>
 
+            <!-- 选择设备 & 手动刷新 -->
+            <div class="device-selector">
+                <el-select
+                    v-model="selectedDeviceId"
+                    placeholder="请选择监控设备"
+                    class="device-select"
+                    clearable
+                    filterable
+                >
+                    <el-option
+                        v-for="d in deviceList"
+                        :key="d.id"
+                        :label="d.deviceName"
+                        :value="d.id"
+                    />
+                </el-select>
+                <el-button
+                    type="primary"
+                    @click="fetchRealtime"
+                    :loading="loading"
+                    icon="Refresh"
+                    class="refresh-btn"
+                >
+                    刷新实时数据
+                </el-button>
+            </div>
+
+            <!-- 实时数据展示 -->
+            <div v-show="!!selectedDeviceId" class="realtime-data-section">
+                <h3 class="section-title">实时能耗数据</h3>
+
+                <!-- 骨架屏加载 -->
+                <el-skeleton
+                    v-if="loading"
+                    :rows="4"
+                    animated
+                    class="skeleton-loading"
+                />
+
+                <!-- 数据卡片 -->
+                <el-row :gutter="20" v-else>
+                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
+                        <el-card class="data-card voltage-card">
+                            <el-statistic
+                                title="电压"
+                                :value="realtimeData?.voltage || 0"
+                                suffix="V"
+                                value-style="font-size: 24px; font-weight: 600;"
+                            />
+                        </el-card>
+                    </el-col>
+                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
+                        <el-card class="data-card current-card">
+                            <el-statistic
+                                title="电流"
+                                :value="realtimeData?.current || 0"
+                                suffix="A"
+                                value-style="font-size: 24px; font-weight: 600;"
+                            />
+                        </el-card>
+                    </el-col>
+                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
+                        <el-card class="data-card power-card">
+                            <el-statistic
+                                title="功率"
+                                :value="realtimeData?.power || 0"
+                                suffix="W"
+                                value-style="font-size: 24px; font-weight: 600; color: #409EFF;"
+                            />
+                        </el-card>
+                    </el-col>
+                    <el-col :xs="12" :sm="6" :md="6" :lg="6">
+                        <el-card class="data-card energy-card">
+                            <el-statistic
+                                title="累计用电"
+                                :value="realtimeData?.totalEnergy || 0"
+                                suffix="kWh"
+                                value-style="font-size: 24px; font-weight: 600;"
+                            />
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
+
+            <!-- 无数据提示 -->
+            <div v-show="!selectedDeviceId" class="empty-tip">
+                <el-empty description="请选择设备查看能耗数据" />
+            </div>
+
+            <!-- 历史功率折线图 -->
+            <div class="chart-section" v-show="!!selectedDeviceId">
+                <h3 class="section-title">历史功率变化趋势</h3>
+
+                <!-- 图表加载状态 -->
+                <div v-if="chartLoading" class="chart-loading">
+                    <el-skeleton :rows="1" height="300px" animated />
+                </div>
+
+                <!-- 图表容器 -->
+                <div id="power-chart" class="chart-container" />
+
+                <!-- 无历史数据提示 -->
+                <div v-if="!chartLoading && historyData.length === 0" class="chart-empty">
+                    <el-empty description="暂无历史功率数据" />
+                </div>
+            </div>
+        </el-card>
+    </div>
+</template>
 
 <style scoped lang="scss">
 // 全局样式变量
