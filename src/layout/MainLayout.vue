@@ -7,10 +7,13 @@ const tokenStore = useTokenStore();
 const router = useRouter()
 
 // 取 layout 下的子路由
-const menuRoutes = router.options.routes.find(
-    r => r.path === "/"
-)?.children || []
-
+const menuRoutes = (
+    router.options.routes.find(r => r.path === "/")?.children || []
+).filter(route => {
+    const roles = route.meta?.roles
+    if (!roles) return true
+    return roles.includes(tokenStore.role)
+})
 // 退出登录
 const handleLogout = () => {
     tokenStore.removeToken()
