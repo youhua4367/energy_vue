@@ -1,0 +1,39 @@
+html, body #app {
+    font-family: 'FangZhengXingShu', 'FZXingKai-S04', 'KaiTi', '楷体', cursive;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+    box-sizing: border-box;
+
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+ul, ol {
+    list-style: none;
+
+}
+
+.h3Title {
+    font-size: 4.2vw;
+}
+
+.bannerText {
+    font-size: 3vw;
+    color: #666666;
+}
+
+.linkText {
+    font-size: 3vw;
+    color: #C79060;
+    font-weight: 700;
+}

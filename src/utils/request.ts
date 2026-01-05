@@ -15,6 +15,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
     (config) => {
         const tokenStore = useTokenStore()
+        console.log(tokenStore.token)
         if (tokenStore.token) {
             config.headers.Authorization = `Bearer ${tokenStore.token}`
         }
@@ -28,7 +29,7 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
     result => {
-        if (result.data.code === 200) {
+        if (result.data.code === 1) {
             return result.data;
         }
         ElMessage.error(result.data.message ? result.data.message : '服务异常');
